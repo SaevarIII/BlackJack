@@ -1,12 +1,13 @@
 package com.example.blackjack.Vinnsla;
 
 public class GameModel {
-    private final Deck deck;
+    private Deck deck;
     private final Player player;
     private final Dealer dealer;
     private boolean roundOver = false;
     private Outcome outcome = Outcome.IN_PROGRESS;
-    private int currentbet;
+    private int currentBet;
+    private final Rules rules = new Rules();
 
     public GameModel() {
         this.deck = new Deck();
@@ -14,25 +15,34 @@ public class GameModel {
         this.dealer = new Dealer();
     }
 
-    public void setCurrentbet(int bet) {
-        this.currentbet = bet;
+
+
+    public int getCurrentBet(){
+        return currentBet;
     }
 
-    public int getCurrentbet(){
-        return currentbet;
-    }
-
-    public void newRound() {
+    public boolean newRound() {
+        if(!validBet()){
+            return false;
+        }
         roundOver = false;
-        outcome = outcome.IN_PROGRESS;
+        outcome = Outcome.IN_PROGRESS;
         player.clearHand();
         dealer.clearHand();
+        if(deck.size() < 4){
+            deck.newDeck();
+        }
         deck.shuffle();
+        player.receive(deck.dealCard());
+        dealer.receive(deck.dealCard());
+        player.receive(deck.dealCard());
+        dealer.receive(deck.dealCard());
+        return true;
 
-        player.receive(deck.dealCard());
-        dealer.receive(deck.dealCard());
-        player.receive(deck.dealCard());
-        dealer.receive(deck.dealCard());
+    }
+
+    public boolean validBet(){
+        return currentBet > 0 && currentBet <= player.getMoney();
     }
 
     public void playerHit() {
@@ -69,25 +79,14 @@ public class GameModel {
         updateMoney();
         }
 
-        private void updateMoney(){
-            switch (outcome) {
-                case PLAYER_WIN:
-                    player.addMoney(currentbet);
-                    break;
-                case DEALER_WIN:
-                    player.takeMoney(currentbet);
-                    break;
-                case PUSH:
-                    break;
-                default:
-                    break;
+    private void updateMoney() {
+        boolean blackjack = rules.playerHasNaturalBlackjack(player,dealer);
 
-            }
+        int delta = rules.calculatePayout(outcome, blackjack, currentBet);
 
-        }
-
-
-
+        if (delta > 0) player.addMoney(delta);
+        else if (delta < 0) player.takeMoney(-delta);
+    }
         private Outcome whoWon(){
         if(player.isBust()){
             return Outcome.DEALER_WIN;
@@ -112,6 +111,33 @@ public class GameModel {
     public Outcome getOutcome() {
         return outcome;
     }
+
+
+    public boolean setBet(int bet){
+        if(bet >0 && player.getMoney()>= bet){
+            this.currentBet = bet;
+            return true;
+        }
+        return false;
+    }
+
+
+    public void playerDouble(){
+        if(roundOver) return;
+        if(!rules.canDouble(player)) return;
+        if(player.getMoney() < currentBet) return;
+        currentBet *=2;
+        player.receive(deck.dealCard());
+        if(player.isBust()){
+            endRound();
+            return;
+        }
+        dealerTurn();
+        endRound();
+    }
+
+
+
 
 
 }

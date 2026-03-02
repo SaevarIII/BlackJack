@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Player {
     private final List<Card> hand = new ArrayList<>();
-    private int money = 0;
+    private int money = 100;
 
     public void clearHand() {
         hand.clear();
@@ -37,16 +37,21 @@ public class Player {
         return total;
 
     }
-
-    public int addMoney(int amount){
-        return money+=amount;
+    public int getMoney(){
+        return money;
     }
 
-    public int takeMoney(int amount ){
-        return money-=amount;
+    public void addMoney(int amount){
+         money+=amount;
+    }
+
+    public void takeMoney(int amount ){
+         money-=amount;
     }
 
     public boolean isBust() {
         return handValue() > 21;
     }
+
+
 }
