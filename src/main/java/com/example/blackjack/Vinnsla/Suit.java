@@ -1,7 +1,19 @@
 package com.example.blackjack.Vinnsla;
 
 public enum Suit {
-    HEARTHS, DIAMONDS, CLUBS, SPADES
+
+    HEARTS("♥"),
+    DIAMONDS("♦"),
+    CLUBS("♣"),
+    SPADES("♠");
+    private final String symbol;
+    Suit(String symbol) {
+        this.symbol = symbol;
+    }
+
+    public String getSymbol() {
+        return symbol;
+    }
 }
 
 

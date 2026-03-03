@@ -54,9 +54,7 @@ public class GameModel {
     }
 
     public void playerStand() {
-        if(roundOver) return;
-        dealerTurn();
-        endRound();
+
     }
 
     private void dealerTurn() {
@@ -119,6 +117,20 @@ public class GameModel {
             return true;
         }
         return false;
+    }
+
+    public boolean dealerNeedsHit() {
+        return dealer.shouldHit(); // or rules.dealerShouldHit(dealer)
+    }
+
+    public void dealerHitOnce() {
+        dealer.receive(deck.dealCard());
+    }
+
+    public void finishRound() {
+        // ends round using current hands (dealer already done)
+        // you already have endRound(); just call it
+        endRound();
     }
 
 

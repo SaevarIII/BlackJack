@@ -7,13 +7,13 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class HelloApplication extends Application {
+public class BlackJackApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("BlackJack.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(BlackJackApplication.class.getResource("BlackJack.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 320, 240);
 
-        var css = HelloApplication.class.getResource("/css/Layout.css");
+        var css = BlackJackApplication.class.getResource("/css/Layout.css");
         if (css == null) throw new IllegalStateException("Missing /css/Layout.css");
         scene.getStylesheets().add(css.toExternalForm());
 
